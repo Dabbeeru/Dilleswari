@@ -1,54 +1,21 @@
-       pipeline {
-          agent any
-          stages {
-              stage('Checkout external proj') {
-                steps {
-                    git branch: 'master',
-                        credentialsId: 'gitlab',
-                    url: 'https://github.com/Dabbeeru/Dilleswari.git'
-        
-                    sh "ls -lat"
-			
-
-        
-                }
-        		}
-        	
-            
-              
-            
-        stage ('Initialize') {
-            steps {
-                sh '''
-                    echo "PATH = ${PATH}"
-                    echo "M2_HOME = ${M2_HOME}"
-                '''
-            }
-        }
-
-        stage ('Build') {
-            steps {
-                echo 'maven clean'
-                //ABC indicates the folder name where the pom.xml file resides
-                bat ' mvn -f ABC/pom.xml clean install'  
-            }
-  }
- 
-    
-
- stage('Create Docker Image') {
- steps{
+node {
+  checkout scm
+  env.PATH = "${tool 'Maven3'}/bin:${env.PATH}"
+  stage('Package') {
     dir('webapp') {
-       
-	    sh docker build -t test_dotnet_image 
-	   sh docker.build("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}")
-	  
+      sh 'mvn clean package -DskipTests'
     }
   }
-}
+
+  stage('Create Docker Image') {
+    dir('webapp') {
+      docker.build("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}")
+	   sh 'docker build -t testimg  ("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}")'
+    }
+  }
+
   stage ('Run Application') {
-  steps{
-    
+    try {
       // Start database container here
       // sh 'docker run -d --name db -p 8091-8093:8091-8093 -p 11210:11210 dilleswari/oreilly-couchbase:latest'
 
@@ -60,20 +27,24 @@
       //dir ('webapp') {
       //  sh 'mvn exec:java -DskipTests'
       //}
-    } 
-	
-  
-}
+    } catch (error) {
+    } finally {
+      // Stop and remove database container here
+      //sh 'docker-compose stop db'
+      //sh 'docker-compose rm db'
+    }
+  }
+
   stage('Run Tests') {
-  steps{
-    
+    try {
       dir('webapp') {
         sh "mvn test"
-       sh docker.build("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}").push()
+        docker.build("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}").push()
       }
-    }  
- 
-}
-    }
+    } catch (error) {
 
+    } finally {
+      junit '**/target/surefire-reports/*.xml'
+    }
+  }
 }
