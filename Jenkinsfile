@@ -40,6 +40,7 @@
  steps{
     dir('webapp') {
        
+	    sh docker build -t test_dotnet_image 
 	   sh docker.build("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}")
 	  
     }
