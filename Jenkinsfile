@@ -36,7 +36,7 @@
  steps{
     dir('webapp') {
        
-	  ddocker.build("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}")
+	 sh 'ddocker.build("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}")'
 	  
     }
   }
