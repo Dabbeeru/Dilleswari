@@ -28,7 +28,7 @@
 
         stage ('Build') {
             steps {
-                sh 'mvn install:install-file "-DgroupId=org.mozilla" "-DartifactId=jss" "-Dversion=4.2.5" "-Dpackaging=jar" ' 
+                sh 'mvn -f otherdirectory/pom.xml clean install ' 
             }
 
   }
