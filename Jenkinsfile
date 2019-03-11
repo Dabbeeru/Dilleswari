@@ -25,7 +25,7 @@
 
         stage ('Build') {
             steps {
-                sh 'mvn -Dmaven.test.failure.ignore=true -f path/to/pom.xml <goals> install' 
+                sh 'mvn install:install-file "-DgroupId=org.mozilla" "-DartifactId=jss" "-Dversion=4.2.5" "-Dpackaging=jar" "-Dfile=/var/lib/jenkins/workspace/docker-jenkins-pipeline"' 
             }
 
   }
