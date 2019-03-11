@@ -25,7 +25,7 @@
 
         stage ('Build') {
             steps {
-                sh 'mvn install:install-file "-DgroupId=org.mozilla" "-DartifactId=jss" "-Dversion=4.2.5" "-Dpackaging=jar" "-Dfile=C:\Users\AArmijos\workspace\componentes-1.0.4\deps\jss-4.2.5.jar"' 
+                sh 'mvn -Dmaven.test.failure.ignore=true -f path/to/pom.xml <goals> install' 
             }
 
   }
