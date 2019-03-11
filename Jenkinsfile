@@ -25,7 +25,7 @@
 
         stage ('Build') {
             steps {
-                sh 'mvn install:install-file "-DgroupId=org.mozilla" "-DartifactId=jss" "-Dversion=4.2.5" "-Dpackaging=jar" "-Dfile=/var/lib/jenkins/workspace/docker-jenkins-pipeline"' 
+                sh 'mvn -Dmaven.test.failure.ignore=true install' 
             }
 
   }
