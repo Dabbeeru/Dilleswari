@@ -8,6 +8,9 @@
                     url: 'https://github.com/Dabbeeru/Dilleswari.git'
         
                     sh "ls -lat"
+			sh mvnHome = tool 'M3'
+
+        bat "${mvnHome}\\bin\\mvn -B install"
                 }
         		}
         	
