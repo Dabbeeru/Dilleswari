@@ -1,6 +1,15 @@
 node {
   checkout scm
   env.PATH = "${tool 'M2_HOME'}/bin:${env.PATH}"
+	stage('Checkout external proj') {
+                steps {
+                    git branch: 'master',
+                        credentialsId: 'gitlab',
+                    url: 'https://github.com/Dabbeeru/dilled.git'
+        
+                    sh "ls -lat"
+                }
+        		}
   stage('Package') {
     dir('webapp') {
       sh 'mvn clean package -DskipTests'
