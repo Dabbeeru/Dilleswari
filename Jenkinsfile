@@ -1,7 +1,7 @@
-node {
-  checkout scm
-  env.PATH = "${tool 'M2_HOME'}/bin:${env.PATH}"
-	stage('Checkout external proj') {
+  pipeline {
+          agent any
+          stages {
+              stage('Checkout external proj') {
                 steps {
                     git branch: 'master',
                         credentialsId: 'gitlab',
@@ -10,21 +10,40 @@ node {
                     sh "ls -lat"
                 }
         		}
-  stage('Package') {
+        	
+            
+              
+            
+        stage ('Initialize') {
+            steps {
+                sh '''
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                '''
+            }
+        }
+
+        stage ('Build') {
+            steps {
+                sh 'mvn -Dmaven.test.failure.ignore=true install' 
+            }
+
+  }
+ 
+    
+
+ stage('Create Docker Image') {
+ steps{
     dir('webapp') {
-      sh 'mvn clean package -DskipTests'
+       
+	  ddocker.build("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}")
+	  
     }
   }
-
-  stage('Create Docker Image') {
-    dir('webapp') {
-      docker.build("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}")
-	   sh 'docker build -t testimg  ("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}")'
-    }
-  }
-
+}
   stage ('Run Application') {
-    try {
+  steps{
+    
       // Start database container here
       // sh 'docker run -d --name db -p 8091-8093:8091-8093 -p 11210:11210 dilleswari/oreilly-couchbase:latest'
 
@@ -36,16 +55,13 @@ node {
       //dir ('webapp') {
       //  sh 'mvn exec:java -DskipTests'
       //}
-    } catch (error) {
-    } finally {
-      // Stop and remove database container here
-      //sh 'docker-compose stop db'
-      //sh 'docker-compose rm db'
-    }
-  }
-
+    } 
+	
+  
+}
   stage('Run Tests') {
-    try {
+  steps{
+    
       dir('webapp') {
         sh "mvn test"
         docker.build("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}").push()
@@ -55,5 +71,8 @@ node {
     } finally {
       junit '**/target/surefire-reports/*.xml'
     }
-  }
+ 
+}
+    }
+
 }
