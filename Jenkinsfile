@@ -8,9 +8,9 @@
                     url: 'https://github.com/Dabbeeru/Dilleswari.git'
         
                     sh "ls -lat"
-			sh mvnHome = tool 'M3'
+			
 
-        bat "${mvnHome}\\bin\\mvn -B install"
+        
                 }
         		}
         	
@@ -28,9 +28,10 @@
 
         stage ('Build') {
             steps {
-                sh 'mvn -f otherdirectory/pom.xml clean install ' 
+                echo 'maven clean'
+                //ABC indicates the folder name where the pom.xml file resides
+                bat ' mvn -f ABC/pom.xml clean install'  
             }
-
   }
  
     
