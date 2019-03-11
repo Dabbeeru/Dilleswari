@@ -66,11 +66,7 @@
         sh "mvn test"
         docker.build("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}").push()
       }
-    } catch (error) {
-
-    } finally {
-      junit '**/target/surefire-reports/*.xml'
-    }
+    } 
  
 }
     }
