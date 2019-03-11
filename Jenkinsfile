@@ -1,4 +1,4 @@
-  pipeline {
+    pipeline {
           agent any
           stages {
               stage('Checkout external proj') {
@@ -64,7 +64,7 @@
     
       dir('webapp') {
         sh "mvn test"
-        docker.build("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}").push()
+        sh 'docker.build("dilleswari/docker-jenkins-pipeline:${env.BUILD_NUMBER}").push()'
       }
     } 
  
