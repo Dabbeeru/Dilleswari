@@ -1,5 +1,10 @@
-FROM openjdk
+FROM centos:latest
 
-COPY target/webapp-1.0-SNAPSHOT-jar-with-dependencies.jar /opt/webapp-1.0-SNAPSHOT-jar-with-dependencies.jar
+MAINTAINER NewstarCorporation
 
-CMD java -jar /opt/webapp-1.0-SNAPSHOT-jar-with-dependencies.jar
+RUN yum -y install httpd
+
+CMD [“/usr/sbin/httpd”, “-D”, “FOREGROUND”]
+
+EXPOSE 80
+
