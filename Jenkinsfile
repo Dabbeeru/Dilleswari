@@ -46,7 +46,7 @@
           sh 'docker images'
           sh 'docker run -d centos'
           sh 'docker tag centos:latest dilleswari:tagname'
-         sh 'docker push dilleswari/learning:latest'
+         sh 'docker push dilleswari/learning:centos'
         }
       }
     }
