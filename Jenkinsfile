@@ -47,7 +47,7 @@
           sh 'docker run -d centos'
           sh 'docker tag centos:latest dilleswari:tagname'
          sh'docker login -u dilleswari -p l@xmi321'
-         sh 'docker push dilleswari:tagname'
+         sh 'docker tag centos dilleswari/centos'
        sh  'docker tag centos dilleswari/centos'
          
         }
