@@ -1,52 +1,9 @@
- pipeline {
-        environment {
-    registry = "dilleswari/learning"
-    registryCredential = 'Dockerhub'
-  }
-          agent any
-          stages {
-              stage('Checkout external proj') {
-                steps {
-                    git branch: 'master',
-                        credentialsId: 'gitlab',
-                    url: 'https://github.com/Dabbeeru/Dilleswari.git'
-        
-                    sh "ls -lat"
-                }
-        		}
-        	
-            
-              
-            
-        stage ('Initialize') {
-            steps {
-                sh '''
-                    echo "PATH = ${PATH}"
-                    echo "M2_HOME = ${M2_HOME}"
-                '''
-            }
-        }
-
-        stage ('Build') {
-            steps {
-                sh 'mvn clean package -DskipTests' 
-            }
-
-  }
- 
-    
-
-
-  
-  stage('Run Tests') {
-     
-      steps ('webapp') {
-        sh "mvn  -fae test"
-         
-      }
-     
-     
-  }
+ node {
+    stage 'Checkout'
+    checkout scm
+    stage 'Build Maven'
+    wrap([$class: 'ConfigFileBuildWrapper', managedFiles: [[fileId: 'global-settings', targetLocation: '', variable: 'GLOBAL_SETTINGS']]]) {
+        sh "echo {env.GLOBAL_SETTINGS}"
+        sh "${tool 'mvn'}/bin/mvn clean install --settings ${env.GLOBAL_SETTINGS}"
     }
-
 }
